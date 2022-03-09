@@ -8,8 +8,7 @@ import java.io.Serializable;
 public class AccelBox implements Serializable {
     private static final long serialVersionUID = 126058262246325L;
 
-    private static final double GRAVITY = 10;
-    private static final double TIME_SCALE = 10_000_000L;
+    private static final double GRAVITY = 3;
     private static final double NANOSECOND = 1_000_000_000L;
 
     private final Rectangle box = new Rectangle(220, 180, 40, 40);
@@ -21,11 +20,8 @@ public class AccelBox implements Serializable {
 
     public void jump(long time) {
         started = true;
-
-        // using this if we can only jump on the way down
-        if (velocity <= 0) {
-            velocity = 40;
-        }
+        jumpStart = time;
+        velocity = 25;
     }
 
     public void tick(long time) {
@@ -33,9 +29,9 @@ public class AccelBox implements Serializable {
             return;
         }
 
-        double deltaTime = ((time - jumpStart) / NANOSECOND) / TIME_SCALE;
+        double deltaTime = ((time - jumpStart) / NANOSECOND);
         box.y -= velocity * deltaTime;
-        velocity -= GRAVITY * deltaTime;
+        velocity -= Math.min(20, GRAVITY * deltaTime);
     }
 
     public void paint(Graphics g) {
